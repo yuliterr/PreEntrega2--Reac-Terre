@@ -1,47 +1,69 @@
 import { useState, useEffect } from "react"
-import { getProducts } from "../../data/data.js"
 import ItemList from "./ItemList.jsx"
 import { useParams } from "react-router-dom"
+import { collection, getDocs, query, where } from "firebase/firestore"
+import db from "../../db/db.js"
 import { PacmanLoader } from "react-spinners"
 import "./itemlistcontainer.css"
 
+
+
 const ItemListContainer = ({ greeting }) => {
   const [products, setProducts] = useState([])
-  const [loading, setLoading] = useState (false)
-  
 
   const { idCategory } = useParams()
 
-  useEffect(() => {
-    setLoading (true)
+  const collectionName = collection(db, "products")
 
-    getProducts()
-      .then((data) => {
-        if(idCategory){
-          //filtrar la data por ese valor
-          const filterProducts = data.filter( (product) => product.category === idCategory )
-          setProducts(filterProducts)
-        }else{
-          //guardar toda la lista de los productos
-          setProducts(data)
-        }
+  const getProducts = async() => {
+    try {
+      const dataDb = await getDocs(collectionName)
+
+      const data = dataDb.docs.map((productDb) => {
+        return { id: productDb.id, ...productDb.data() }
       })
-      .catch((error) => {
-        console.error(error)
+
+      setProducts(data)
+
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const getProductsByCategory = async() => {
+    try {
+      const q = query( collectionName , where("category", "==", idCategory ) )
+      const dataDb = await getDocs(q)
+  
+      const data = dataDb.docs.map((productDb) => {
+        return { id: productDb.id, ...productDb.data() }
       })
-      .finally(() => {
-        setLoading (false)
-      })
+  
+      setProducts(data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+
+
+  useEffect(() => {
+    if(idCategory){
+      getProductsByCategory()
+    }else{
+      getProducts()
+    }
   }, [idCategory])
+
+  
 
   return (
     <div className="itemlistcontainer">
       <h1>{greeting}</h1>
-        {
-          loading === true ? (<div style={{height: "80vh", display: "flex", justifyContent: "center", alignItems:"center"}}> <PacmanLoader color="#ff8a00" /> </div>) : ( <ItemList products={products} />)
-        }
-
+      <ItemList products={products} />
     </div>
   )
 }
+
 export default ItemListContainer
+

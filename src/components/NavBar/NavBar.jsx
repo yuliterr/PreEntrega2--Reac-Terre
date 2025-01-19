@@ -13,7 +13,7 @@ const NavBar = () => {
     <nav className='navbar'>
 
         <div className='brand'>
-        <button onClick={ () => navigate(-1)}>Atras</button>
+        <button className="button-back" onClick={ () => navigate(-1)}>Atras</button>
         <p className="title-brand">PICUDITOS</p>
         </div>  
 

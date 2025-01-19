@@ -25,3 +25,22 @@
   .item .text-item{
     padding: 1% 0;
   }
+
+  a {
+    text-decoration: none;
+}
+
+.item .button-detail{
+  width: 100%;
+  margin: 10px 0 0 0;
+  padding: 10px;
+  text-align: center;
+  background-color: rgb(255, 179, 79);
+  border-radius: 5px;
+  border: 2px solid rgb(255, 146, 3);
+  color: black;
+}
+.item .button-detail:hover{
+  border: 2px solid white;
+  color: white;
+}
