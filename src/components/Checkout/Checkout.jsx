@@ -13,7 +13,9 @@ const Checkout = () => {
     fullname: "",
     phone: "",
     email: "",
+    email: "",
   })
+
   const [orderId, setOrderId] = useState(null)
   const { cart, totalPrice } = useContext(CartContext)
 

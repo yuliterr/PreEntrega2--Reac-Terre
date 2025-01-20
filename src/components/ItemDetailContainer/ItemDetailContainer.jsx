@@ -3,15 +3,18 @@ import ItemDetail from "./ItemDetail"
 import { doc, getDoc } from "firebase/firestore"
 import db from "../../db/db.js"
 import { useParams } from "react-router-dom"
+import { PacmanLoader } from "react-spinners"
 
 
 const ItemDetailContainer = () => {
   const [product, setProduct] = useState({})
+  const [loading, setLoading] = useState(true)
 
   const { idProduct } = useParams()
 
   const getProduct = async() => {
     try {
+      setLoading (true)
       const docRef = doc(db, "products", idProduct)
       const dataDb = await getDoc(docRef)
 
@@ -20,6 +23,8 @@ const ItemDetailContainer = () => {
       setProduct(data)
     } catch (error) {
       console.log(error)
+    }finally{
+      setLoading(false)
     }
   }
 
@@ -31,7 +36,14 @@ const ItemDetailContainer = () => {
   }, [idProduct])
 
   return (
-    <ItemDetail product={product} />
+    <div>
+    {
+        loading === true ? (<div style = {{height: "80vh", display: "flex", justifyContent: "center", alignItems: "center" }}> < PacmanLoader color="#ff6b00" /> </div>
+        ) : (  <ItemDetail product={product} /> )
+      }
+    
+
+  </div>
   )
 }
 
